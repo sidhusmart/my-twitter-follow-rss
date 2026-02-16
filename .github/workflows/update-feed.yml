@@ -1,0 +1,31 @@
+name: Update Twitter RSS Feed
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch: {}   # Manual trigger for testing
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate feed
+        run: python generate_feed.py
+        env:
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          X_FOLLOW_ACCOUNTS: ${{ secrets.X_FOLLOW_ACCOUNTS }}
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add feed.xml last_seen_id.txt
+          git diff --staged --quiet || (git commit -m "Update feed" && git push)
