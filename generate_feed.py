@@ -75,7 +75,7 @@ def write_last_seen_id(tweet_id):
 
 def search_recent_tweets(bearer_token, usernames, max_results=20, since_id=None):
     """Call X API v2 recent search for tweets from the given usernames."""
-    query = " OR ".join(f"from:{u}" for u in usernames)
+    query = "(" + " OR ".join(f"from:{u}" for u in usernames) + ") -is:retweet"
     params = {
         "query": query,
         "max_results": max_results,

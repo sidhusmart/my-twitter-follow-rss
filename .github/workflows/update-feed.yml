@@ -2,7 +2,7 @@ name: Update Twitter RSS Feed
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+    - cron: '0 */4 * * *'  # Every 4 hours
   workflow_dispatch: {}   # Manual trigger for testing
 
 jobs:
